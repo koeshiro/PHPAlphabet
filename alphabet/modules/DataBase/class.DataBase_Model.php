@@ -9,12 +9,19 @@ use \PDO;
    public $Columns=array();
    var $Connection;
    public $TestStructure;
+   /**
+   * Get DB Connection
+   * if $this->TestStructure == true - test Table Structure
+   */
    function __construct(){
      $this->Connection=Connector::GetConnection();
      if($this->TestStructure){
        $this->TestTableStructure();
      }
    }
+   /**
+   * Test Table Structure
+   */
    private function TestTableStructure(){
      $Tables=$this->Connection->query('SHOW TABLES')->fetchAll(PDO::FETCH_ASSOC);
      $TableIsSet=false;
@@ -58,11 +65,29 @@ use \PDO;
        }
      }
    }
-
+   /**
+   * Function For Delete Column
+   * @param string $Column - Column name
+   * @return \PDOStatement
+   */
    private function DeleteColumn(string $Column){
      return $this->Connection->exec('ALTER TABLE '.$this->TableName.' DROP COLUMN '.$Column.';');
    }
-   private function EditColumn($ColumnName,$ColumnSettings){
+   /**
+   * Function For Edit Column
+   * @param string $Column - Column name
+   * @param array $ColumnSettings - Column Settings array(
+   *                                                  'columnName'=>array(
+   *                                                     'Type'=>'INT',
+   *                                                     'Length'=>11,
+   *                                                     'Null'=>'No',
+   *                                                     'Extra'=>'AUTO_INCREMENT',
+   *                                                     'Key'=>'PRIMARY'
+   *                                                   )
+   *                                                )
+   * @return \PDOStatement
+   */
+   private function EditColumn(string $ColumnName,array $ColumnSettings){
      $TableName=$this->TableName;
      $Type=$ColumnSettings['Type'];
      if(strlen($ColumnSettings['Length'])>0) $Type=$Type.'('.$ColumnSettings['Length'].')';
@@ -72,7 +97,21 @@ use \PDO;
      else $Default='';
      return $this->Connection->exec("ALTER TABLE $TableName MODIFY COLUMN $ColumnName $Type $Null $Default;");
    }
-   private function CreateColumn($ColumnName,$ColumnSettings){
+   /**
+    * Function For Edit Column
+    * @param string $Column - Column name
+    * @param array $ColumnSettings - Column Settings array(
+    *                                                  'columnName'=>array(
+    *                                                     'Type'=>'INT',
+    *                                                     'Length'=>11,
+    *                                                     'Null'=>'No',
+    *                                                     'Extra'=>'AUTO_INCREMENT',
+    *                                                     'Key'=>'PRIMARY'
+    *                                                   )
+    *                                                )
+    * @return \PDOStatement
+    */
+   private function CreateColumn(string $ColumnName,array $ColumnSettings){
      $TableName=$this->TableName;
      $Type=$ColumnSettings['Type'];
      if(strlen($ColumnSettings['Length'])>0) $Type=$Type.'('.$ColumnSettings['Length'].')';
@@ -82,6 +121,10 @@ use \PDO;
      else $Default='';
      return $this->Connection->exec("ALTER TABLE $TableName ADD COLUMN $ColumnName $Type $Null $Default;");
    }
+   /**
+   * Function create table
+   * @return \PDOStatement
+   */
    private function CreateTable(){
      $TableName=$this->TableName; $Keys='';
      $SQL='CREATE TABLE IF NOT EXISTS '.$TableName.' (';
@@ -104,9 +147,9 @@ use \PDO;
             $Extra=''.$ColumnSettings['Extra'];
        } else $Extra='';
        if(
-                array_key_exists('Key',$ColumnSettings)
-              ) {
-                $Keys.="$ColumnSettings[Key] KEY (`$Primary`),"
+            array_key_exists('Key',$ColumnSettings)
+         ) {
+            $Keys.="$ColumnSettings[Key] KEY (`$Primary`),";
             $Primary=$ColumnName;
        }
 

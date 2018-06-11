@@ -74,7 +74,14 @@ class SQLBuilder {
   *                        Example: array('column'=>'value')
   * @param array $Where  - Parameters for query
   *                        Example:
-  *                        array(\DataBase\SQLBuilder::$WHERE_GROUP=>array(array('column1'=>'value'),\DataBase\SQLBuilder::$WHERE_AND=>array('t1.column2'=>'value')),\DataBase\SQLBuilder::$WHERE_OR=>array('t1.column3'=>'value'))
+  *                        array(
+  *                               \DataBase\SQLBuilder::$WHERE_GROUP=>
+  *                                                                    array(
+  *                                                                          array('column1'=>'value'),
+  *                                                                          \DataBase\SQLBuilder::$WHERE_AND=>array('t1.column2'=>'value')
+  *                                                                    ),
+  *                                \DataBase\SQLBuilder::$WHERE_OR=>array('t1.column3'=>'value')
+  *                        )
   * @return string
   */
   public static function Update(array $Tables, array $Data, array $Where=array(),array $Limit=array()){
@@ -149,6 +156,8 @@ class SQLBuilder {
   *                                         array('>=column'=>'value')
   *                                         array('=column'=>'value')
   *                                         array('column'=>'value')
+  *                                         array('IN column'=>array)
+  *                                         array('notIN column'=>array)
   * @return string
   */
   private static function arrayToSQLWhereParameter(array $Parameter){
@@ -159,6 +168,18 @@ class SQLBuilder {
         return ' '.$key.' <= '.$value.' ';
       } else if(strpos($key,'>=') === 0) {                                        //Greater or equal
         return ' '.$key.' >= '.$value.' ';
+      } else if(strpos($key,'IN ')  === 0) {                                      //IN array
+        $SQLINArray='';
+        foreach ($value as $val) {
+          $SQLINArray.=','.\DataBase\Connector::GetConnection()->quote($val);
+        }
+        return ' '.$key.' IN ('.substr($SQLINArray,1).') ';
+      } else if(strpos($key,'notIN ')  === 0) {                                   //NOT IN array
+        $SQLINArray='';
+        foreach ($value as $val) {
+          $SQLINArray.=','.\DataBase\Connector::GetConnection()->quote($val);
+        }
+        return ' '.$key.' NOT IN ('.substr($SQLINArray,1).') ';
       } else if(strpos($key,'=')  === 0) {                                        //Equal
         return ' '.$key.' = '.$value.' ';
       } else {                                                                    //Equal

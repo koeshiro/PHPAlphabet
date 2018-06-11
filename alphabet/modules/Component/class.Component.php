@@ -48,7 +48,7 @@ class Engine {
       include_once $ComponentDirName.'/templates/'.$ComponentTemp.'/template.php';
       $Result = ob_get_contents();
       ob_end_clean();
-      $EventEmiter->emit($this->ComponentName.'_component_template_result',array('RESULT'=>$Result));
+      $EventEmiter->emit($this->ComponentName.'_component_template_result',($data = array('RESULT'=>$Result)));
       return $Result;
     }
     return false;

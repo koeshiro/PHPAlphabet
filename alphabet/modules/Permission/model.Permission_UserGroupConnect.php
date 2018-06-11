@@ -25,7 +25,7 @@ class UserGroupConnectorModel extends \DataBase\Table {
       'Null'=>'No'
     ),
   );
-  public function DeleteUserGroups(int $ID){
+  public function DeleteUserFromGroups(int $ID){
     return $this->Connection->exec(
             SQLBuilder::Delete(
               array($this->TableName),
@@ -33,11 +33,11 @@ class UserGroupConnectorModel extends \DataBase\Table {
             )
           );
   }
-  public function AddUserGroups(int $UserID,array $IDs){
+  public function AddUserToGroups(int $UserID,array $IDs){
     foreach ($IDs as $ID) {
       $this->Add(
         array(
-          'user_id'=>$UserID,
+          'user_id'=>$UserIDa,
           'group_id'=>$ID
         )
       );
