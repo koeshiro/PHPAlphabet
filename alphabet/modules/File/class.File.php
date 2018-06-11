@@ -6,11 +6,9 @@ namespace File;
 class Engine {
   function __construct() {
     $RealDirPath=$this->getRealDirPath(RAW_URI);
-    //echo "$RealDirPath,$_SERVER[DOCUMENT_ROOT]<br>".$RealDirPath.'index.php<br>';
     if(is_dir($RealDirPath) && $RealDirPath!=$_SERVER['DOCUMENT_ROOT'].'/'){
       //if url is path to real directory try require index.php or if we havent index return 404
       if(is_file($RealDirPath.'index.php')){
-        //echo $RealDirPath.'/index.php';
         require_once $RealDirPath.'index.php';
       } else {
         require_once $_SERVER['DOCUMENT_ROOT'].'/404.php';

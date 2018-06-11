@@ -1,7 +1,7 @@
 <?
 namespace Event;
 /**
- *
+ * Loader of EventEmiter
  */
 class Loader
 {

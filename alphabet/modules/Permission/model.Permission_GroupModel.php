@@ -33,10 +33,11 @@ class GroupModel extends \DataBase\Table {
   public function GetUserGroups(int $ID) {
     $UserGroupConnector=new UserGroupConnectorModel();
     $UserGroups=$UserGroupConnector->GetList(array('user_index'=>$ID))->FetchAll(\PDO::FETCH_ASSOC);
-    $arGruops=array();
+    $arIntGruops=array();
     foreach ($UserGroups as $GroupConnect) {
-      $arGruops[]=$this->GetByID($GroupConnect['group_id'])->Fetch(\PDO::FETCH_ASSOC);
+      $arIntGruops[]=$GroupConnect['group_id'];
     }
+    $arGruops=$this->GetList(array('ID'=>$GroupConnect['group_id']))->Fetch(\PDO::FETCH_ASSOC);
     return $arGruops;
   }
 }

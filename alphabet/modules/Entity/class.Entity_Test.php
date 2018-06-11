@@ -5,7 +5,7 @@ namespace Entity;
  */
 class Test extends Entity {
   public static function TestByModel(array $Data, \DataBase\Table $Model) {
-    $arSettings=$Model->Columns; /*$Warning=null;*/ $Lang=new \Lang\Includer(__FILE__);
+    $arSettings=$Model->Columns; $Lang=new \Lang\Includer(__FILE__);
     foreach ($arSettings as $strKey => $arColumn) {
       //not set required key
       if(
